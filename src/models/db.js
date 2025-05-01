@@ -92,15 +92,7 @@ const PaymentSchema = new mongoose.Schema(
       required: true,
     },
     notes: {
-      firstName: {
-        type: String,
-        required: true,
-      },
-      lastName: {
-        type: String,
-        required: true,
-      },
-      membershipType: {
+      courseTitle: {
         type: String,
         required: true,
       },
