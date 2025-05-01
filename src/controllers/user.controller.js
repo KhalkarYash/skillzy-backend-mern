@@ -5,19 +5,17 @@ const signup = async (req, res) => {
   try {
     const { username, password, mobile, name } = req.body;
 
-    if (!username || !password || !mobile || !name) {
-      return res.status(400).json({ message: "All fields are required." });
+    if (!(username && password && mobile && name)) {
+      throw new Error("All fields are required.");
     }
 
     if (password.length < 6) {
-      return res
-        .status(400)
-        .json({ message: "Password must be at least 6 characters." });
+      throw new Error("Password must be at least 6 characters.");
     }
 
     const phoneRegex = /^[0-9]{10}$/;
     if (!phoneRegex.test(mobile)) {
-      return res.status(400).json({ message: "Invalid mobile number." });
+      throw new Error("Invalid mobile number.");
     }
 
     const isExisting = await User.findOne({ username });
@@ -25,8 +23,7 @@ const signup = async (req, res) => {
       throw new Error("User already exists! Login to continue.");
     }
 
-    const salt = process.env.SALT;
-    const hashedPassword = await bcrypt.hash(password, salt);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = new User({
       name,
@@ -40,9 +37,9 @@ const signup = async (req, res) => {
     const token = await savedUser.getUserJWT();
 
     res
-      .cookies("token", token, {
+      .cookie("token", token, {
         httpOnly: true,
-        secure: true,
+        secure: process.env.SERVER === "production",
         sameSite: "None",
         expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
       })
@@ -77,9 +74,9 @@ const login = async (req, res) => {
     const token = await user.getUserJWT();
 
     res
-      .cookies("token", token, {
+      .cookie("token", token, {
         httpOnly: true,
-        secure: true,
+        secure: process.env.SERVER === "production",
         sameSite: "None",
         expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
       })
@@ -93,9 +90,9 @@ const login = async (req, res) => {
 const logout = async (req, res) => {
   try {
     res
-      .cookies("token", "", {
+      .cookie("token", "", {
         httpOnly: true,
-        secure: true,
+        secure: process.env.SERVER === "production",
         sameSite: "None",
         expires: new Date(Date.now()),
       })
@@ -117,7 +114,11 @@ const myCourses = async (req, res) => {
       "purchasedCourses"
     );
 
-    res.status(200).json({ courses: userCourses.purchasedCourse });
+    if (!userCourses.courses) {
+      return res.status(404).json({ message: "User hasn't purchased any course!" });
+    }
+
+    res.status(200).json({ courses: userCourses.purchasedCourses });
   } catch (error) {
     res.status(400).json({ message: "ERROR: " + error.message });
   }

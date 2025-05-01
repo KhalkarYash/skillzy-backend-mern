@@ -16,12 +16,13 @@ app.use(
   })
 );
 
+app.use(express.json());
 app.use(cookieParser());
 
 app.use("/admin", adminRouter);
 app.use("/user", userRouter);
 app.use("/payment", paymentRouter);
-app.use("/courses", async (req, res) => {
+app.get("/courses", async (req, res) => {
   try {
     const allCourses = await Course.find({});
 

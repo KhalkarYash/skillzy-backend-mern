@@ -11,6 +11,6 @@ const router = express.Router();
 router.post("/signup", signup);
 router.post("/login", login);
 router.post("/logout", adminMiddleware, logout);
-router.post("/addCourse", adminMiddleware, addCourse);
+router.post("/add-course", adminMiddleware, addCourse);
 
 module.exports = router;
