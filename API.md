@@ -1,3 +1,27 @@
+## API Documentation
+
+Detailed API documentation can be found in the [API.md](API.md) file.
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## Acknowledgments
+
+- Node.js community
+- Express.js framework
+- MongoDB team
+- Razorpay payment gateway
+```
+
+2. API.md file:
+
+````markdown
+// filepath: [API.md](http://_vscodecontentref_/0)
 # Skillzy API Documentation
 
 ## Base URL
@@ -13,6 +37,7 @@ All protected routes require a JWT token sent in an HTTP-only cookie.
 ### 1. User Signup
 ```http
 POST /user/signup
+Content-Type: application/json
 ```
 
 **Request Body:**
@@ -41,6 +66,7 @@ POST /user/signup
 ### 2. User Login
 ```http
 POST /user/login
+Content-Type: application/json
 ```
 
 **Request Body:**
@@ -66,6 +92,7 @@ POST /user/login
 ### 3. User Logout
 ```http
 POST /user/logout
+Authorization: Bearer {token}
 ```
 
 **Response:**
@@ -75,45 +102,12 @@ POST /user/logout
 }
 ```
 
-### 4. Purchase Course
-```http
-POST /user/purchase-course/:courseId
-```
-
-**Parameters:**
-- courseId: MongoDB ObjectId
-
-**Response:**
-```json
-{
-  "message": "Course purchased successfully!"
-}
-```
-
-### 5. My Courses
-```http
-GET /user/my-courses
-```
-
-**Response:**
-```json
-{
-  "courses": [
-    {
-      "title": "string",
-      "description": "string",
-      "price": "number",
-      "imageLink": "string"
-    }
-  ]
-}
-```
-
 ## Admin Endpoints
 
 ### 1. Admin Signup
 ```http
 POST /admin/signup
+Content-Type: application/json
 ```
 
 **Request Body:**
@@ -141,6 +135,7 @@ POST /admin/signup
 ### 2. Admin Login
 ```http
 POST /admin/login
+Content-Type: application/json
 ```
 
 **Request Body:**
@@ -163,106 +158,93 @@ POST /admin/login
 }
 ```
 
-### 3. Admin Logout
-```http
-POST /admin/logout
-```
-
-**Response:**
-```json
-{
-  "message": "Admin logged out successfully!"
-}
-```
-
-### 4. Add Course
-```http
-POST /admin/add-course
-```
-
-**Request Body:**
-```json
-{
-  "title": "string",
-  "description": "string",
-  "price": "number",
-  "imageLink": "string"
-}
-```
-
-**Response:**
-```json
-{
-  "message": "Course created successfully!"
-}
-```
-
 ## Payment Endpoints
 
-### 1. Create Payment
+### 1. Create Payment Order
 ```http
 POST /payment/create
+Content-Type: application/json
+Authorization: Bearer {token}
 ```
 
-**Request Body:**
+**Request:**
 ```json
 {
-  "courseId": "string",
-  "amount": "number"
+  "courseId": "string"
 }
-```
-
-### 2. Payment Webhook
-```http
-POST /payment/webhook
-```
-
-### 3. Verify Payment
-```http
-POST /payment/verify
-```
-
-**Request Body:**
-```json
-{
-  "razorpay_order_id": "string",
-  "razorpay_payment_id": "string",
-  "razorpay_signature": "string"
-}
-```
-
-## Public Endpoints
-
-### 1. List All Courses
-```http
-GET /courses
 ```
 
 **Response:**
 ```json
 {
-  "courses": [
-    {
-      "title": "string",
-      "description": "string",
-      "price": "number",
-      "imageLink": "string"
-    }
-  ]
+  "orderId": "string",
+  "amount": "number",
+  "currency": "string",
+  "receipt": "string",
+  "key": "string",
+  "notes": {
+    "courseTitle": "string"
+  }
+}
+```
+
+### 2. Verify Payment
+```http
+GET /payment/verify
+Authorization: Bearer {token}
+```
+
+**Query Parameters:**
+```
+orderId: string
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Payment verified successfully",
+  "order": {
+    "id": "string",
+    "status": "string"
+  }
+}
+```
+
+### 3. Payment Webhook
+```http
+POST /payment/webhook
+X-Razorpay-Signature: {signature}
+```
+
+**Response:**
+```json
+{
+  "received": true
 }
 ```
 
 ## Error Responses
+
 All endpoints return error responses in the following format:
 
 ```json
 {
-  "message": "ERROR: {error message}"
+  "message": "Error message here",
+  "error": {
+    "code": "ERROR_CODE",
+    "details": "Detailed error information"
+  }
 }
 ```
 
 ## Status Codes
+
 - 200: Success
+- 201: Created
 - 400: Bad Request
 - 401: Unauthorized
+- 403: Forbidden
 - 404: Not Found
+- 500: Internal Server Error
+```

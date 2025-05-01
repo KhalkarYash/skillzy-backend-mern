@@ -58,9 +58,9 @@ POST /admin/add-course # Add new course
 
 ### Payment Routes
 ```http
-POST /payment/create   # Create payment
-POST /payment/webhook  # Payment webhook
-POST /payment/verify  # Verify payment
+POST /payment/create   # Create payment order
+GET  /payment/verify  # Verify payment status
+POST /payment/webhook  # Handle Razorpay webhooks
 ```
 
 ### Public Routes
@@ -77,8 +77,8 @@ MONGO_URL=your_mongodb_url
 PORT=6969
 JWT_SECRET=your_jwt_secret
 CLIENT=http://localhost:5173
-RAZORPAY_KEY=your_razorpay_key
-RAZORPAY_SECRET=your_razorpay_secret
+RAZORPAY_KEY_ID=your_razorpay_key_id
+RAZOR_PAY_SECRET=your_razorpay_secret
 RAZORPAY_WEBHOOK_SECRET=your_webhook_secret
 SERVER=development
 ```
@@ -148,12 +148,14 @@ npm start
 {
   userId: ObjectId,
   courseId: ObjectId,
-  paymentId: String,
   orderId: String,
   amount: Number,
   currency: String,
+  receipt: String,
   status: String,
-  notes: Object
+  notes: {
+    courseTitle: String
+  }
 }
 ```
 
@@ -164,29 +166,11 @@ npm start
 ├── 📁 src
 │   ├── 📁 config
 │   ├── 📁 controllers
-│   ├── 📁 middleware
+│   ├── 📁 middlewares
 │   ├── 📁 models
-│   └── 📁 routes
+│   ├── 📁 routes
+│   └── 📁 utils
 ├── 📄 .env
 ├── 📄 package.json
 └── 📄 server.js
 ```
-
-## API Documentation
-
-Detailed API documentation can be found in the [API.md](API.md) file.
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## Acknowledgments
-
-- Node.js community
-- Express.js framework
-- MongoDB team
-- Razorpay payment gateway
