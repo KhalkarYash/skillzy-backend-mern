@@ -3,8 +3,10 @@ const app = express();
 const cors = require("cors");
 const adminRouter = require("./routes/admin.route");
 const userRouter = require("./routes/user.route");
+const paymentRouter = require("./routes/payment.route");
 const cookieParser = require("cookie-parser");
 const { connectDB } = require("./config/database");
+const { Course } = require("./models/db");
 require("dotenv").config();
 
 app.use(
@@ -18,6 +20,16 @@ app.use(cookieParser());
 
 app.use("/admin", adminRouter);
 app.use("/user", userRouter);
+app.use("/payment", paymentRouter);
+app.use("/courses", async (req, res) => {
+  try {
+    const allCourses = await Course.find({});
+
+    res.status(200).json({ courses: allCourses });
+  } catch (error) {
+    res.status(404).json({ message: "ERROR: " + error.message });
+  }
+});
 
 const PORT = process.env.PORT;
 
