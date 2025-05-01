@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const express = require("express");
 const app = express();
 const cors = require("cors");
@@ -7,7 +9,6 @@ const paymentRouter = require("./routes/payment.route");
 const cookieParser = require("cookie-parser");
 const { connectDB } = require("./config/database");
 const { Course } = require("./models/db");
-require("dotenv").config();
 
 app.use(
   cors({

@@ -1,60 +1,75 @@
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 
-const AdminSchema = mongoose.Schema({
-  username: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-  name: {
-    type: String,
-    required: true,
-  },
-  mobile: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-});
-
-const UserSchema = mongoose.Schema({
-  username: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-  name: {
-    type: String,
-    required: true,
-  },
-  mobile: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  purchasedCourses: [
-    {
-      type: mongoose.Types.ObjectId,
-      ref: "Course",
+const AdminSchema = mongoose.Schema(
+  {
+    username: {
+      type: String,
+      required: true,
+      unique: true,
     },
-  ],
-});
+    password: {
+      type: String,
+      required: true,
+    },
+    name: {
+      type: String,
+      required: true,
+    },
+    mobile: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
 
-const CourseSchema = mongoose.Schema({
-  title: String,
-  description: String,
-  price: Number,
-  imageLink: String,
-});
+const UserSchema = mongoose.Schema(
+  {
+    username: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
+    name: {
+      type: String,
+      required: true,
+    },
+    mobile: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    purchasedCourses: [
+      {
+        type: mongoose.Types.ObjectId,
+        ref: "Course",
+      },
+    ],
+  },
+  {
+    timestamps: true,
+  }
+);
+
+const CourseSchema = mongoose.Schema(
+  {
+    title: String,
+    description: String,
+    price: Number,
+    imageLink: String,
+  },
+  {
+    timestamps: true,
+  }
+);
 
 const PaymentSchema = new mongoose.Schema(
   {

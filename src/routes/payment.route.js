@@ -9,6 +9,6 @@ const {
 
 router.post("/create", userMiddleware, createPayment);
 router.post("/webhook", paymentWebhook);
-router.post("/verify", userMiddleware, verifyPayment);
+router.get("/verify", userMiddleware, verifyPayment);
 
 module.exports = router;
