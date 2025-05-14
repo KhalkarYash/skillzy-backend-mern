@@ -114,13 +114,24 @@ const myCourses = async (req, res) => {
       "purchasedCourses"
     );
 
-    if (!userCourses.courses) {
-      return res.status(404).json({ message: "User hasn't purchased any course!" });
-    }
-
     res.status(200).json({ courses: userCourses.purchasedCourses });
   } catch (error) {
     res.status(400).json({ message: "ERROR: " + error.message });
+  }
+};
+
+const verifyUser = (req, res) => {
+  try {
+    const user = req.user;
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    return res.status(200).json({ message: "User details", user });
+  } catch (error) {
+    console.error("Error verifying user:", error);
+    return res.status(401).json({ message: "Please Login!" });
   }
 };
 
@@ -130,4 +141,5 @@ module.exports = {
   logout,
   purchaseCourse,
   myCourses,
+  verifyUser,
 };

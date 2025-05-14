@@ -33,6 +33,16 @@ app.get("/courses", async (req, res) => {
   }
 });
 
+app.get("/courses/:id", async (req, res) => {
+  try {
+    const course = await Course.findById(req.params.id);
+
+    res.status(200).json({ course });
+  } catch (error) {
+    res.status(404).json({ message: "ERROR: " + error.message });
+  }
+});
+
 const PORT = process.env.PORT;
 
 connectDB()

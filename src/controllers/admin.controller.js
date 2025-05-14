@@ -105,9 +105,9 @@ const logout = async (req, res) => {
 
 const addCourse = async (req, res) => {
   try {
-    const { title, description, imageLink, price } = req.body;
+    const { title, description, imageLink, price, author } = req.body;
 
-    if (!(title && description && imageLink && price)) {
+    if (!(title && description && imageLink && price && author)) {
       throw new Error("All fields are required.");
     }
 
@@ -116,6 +116,7 @@ const addCourse = async (req, res) => {
       description,
       imageLink,
       price,
+      author,
     });
 
     await course.save();
@@ -125,4 +126,19 @@ const addCourse = async (req, res) => {
   }
 };
 
-module.exports = { signup, login, logout, addCourse };
+const verifyAdmin = (req, res) => {
+  try {
+    const user = req.user;
+
+    if (!user) {
+      return res.status(404).json({ message: "Admin not found" });
+    }
+
+    return res.status(200).json({ message: "Admin details", user });
+  } catch (error) {
+    console.error("Error verifying user:", error);
+    return res.status(401).json({ message: "Please Login!" });
+  }
+};
+
+module.exports = { signup, login, logout, addCourse, verifyAdmin };

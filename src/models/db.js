@@ -21,6 +21,10 @@ const AdminSchema = mongoose.Schema(
       required: true,
       unique: true,
     },
+    role: {
+      type: String,
+      default: "admin",
+    },
   },
   {
     timestamps: true,
@@ -53,6 +57,10 @@ const UserSchema = mongoose.Schema(
         ref: "Course",
       },
     ],
+    role: {
+      type: String,
+      default: "user",
+    },
   },
   {
     timestamps: true,
@@ -65,6 +73,7 @@ const CourseSchema = mongoose.Schema(
     description: String,
     price: Number,
     imageLink: String,
+    author: String,
   },
   {
     timestamps: true,
